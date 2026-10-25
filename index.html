@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#07070f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2f3f9" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script src="./assets/thema.js?v=20261024"></script>
+    <link rel="stylesheet" href="./assets/style.css?v=20261024w" />
+    <link rel="stylesheet" href="./spiel.css?v=20261024" />
+    <title>Ludo · Browser-Arcade</title>
+    <meta
+      name="description"
+      content="Das Würfel-Brettspiel für 2 bis 4: gegen den Computer, zusammen am Gerät oder online mit Code."
+    />
+  </head>
+  <body style="--ak: var(--gold)">
+    <div class="raster" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <header class="kopf">
+      <nav class="container nav" aria-label="Hauptnavigation">
+        <a class="marke" href="./"><span class="logo">▶</span>GAMES</a>
+        <div class="nav-links">
+          <a href="./impressum.html">Impressum</a><a href="./datenschutz.html">Datenschutz</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main" class="container">
+      <div class="spiel-kopf">
+        <div>
+          <h1>LUDO</h1>
+          <p class="unterzeile">
+            Würfeln, rauskommen, schlagen – wer zuerst alle vier Figuren im Ziel hat, gewinnt.
+          </p>
+        </div>
+      </div>
+      <div class="vr-modi" id="modi" role="group" aria-label="Spielart">
+        <button type="button" class="knopf" data-modus="computer" aria-pressed="true">
+          Gegen Computer
+        </button>
+        <button type="button" class="knopf" data-modus="zweit" aria-pressed="false">
+          Am Gerät
+        </button>
+        <button type="button" class="knopf" data-modus="online" aria-pressed="false">Online</button>
+      </div>
+      <div class="vr-stufen" id="anzahl" role="group" aria-label="Anzahl Spieler">
+        <span class="lu-gruppe">Spieler:</span>
+        <button type="button" class="knopf" data-anzahl="2" aria-pressed="false">2</button>
+        <button type="button" class="knopf" data-anzahl="3" aria-pressed="false">3</button>
+        <button type="button" class="knopf" data-anzahl="4" aria-pressed="true">4</button>
+      </div>
+      <div class="vr-stufen" id="stufen" role="group" aria-label="Stärke des Computers">
+        <button type="button" class="knopf" data-stufe="gemuetlich" aria-pressed="false">
+          Gemütlich
+        </button>
+        <button type="button" class="knopf" data-stufe="clever" aria-pressed="true">Clever</button>
+      </div>
+      <div class="vr-online" id="online" hidden>
+        <button type="button" class="knopf primaer" id="eroeffnen">Spiel eröffnen</button>
+        <form id="beitritt" novalidate>
+          <label
+            >Code vom Gegenüber<input
+              id="code"
+              maxlength="4"
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+              placeholder="AB3D"
+          /></label>
+          <button type="submit" class="knopf">Beitreten</button>
+        </form>
+        <p class="vr-klein">
+          Bis zu 4 Personen. Online verbinden sich die Browser direkt. Dabei sehen deine Mitspieler
+          technisch deine IP-Adresse. Mehr in der
+          <a href="./datenschutz.html#mehrspieler">Datenschutzerklärung</a>.
+        </p>
+      </div>
+      <div class="vr-kopf" id="raumkopf" hidden>
+        <span>Code: <span class="vr-code" id="raumcode">····</span></span>
+        <button type="button" class="knopf" id="teilen">Code teilen</button>
+        <button type="button" class="knopf primaer" id="starten" hidden>Starten</button>
+        <button type="button" class="knopf" id="aufstehen">Verlassen</button>
+      </div>
+      <div class="hud">
+        <div class="hud-feld">
+          <div class="label" id="hud-l1">Punkte</div>
+          <div class="wert" id="hud-1">0</div>
+        </div>
+        <div class="hud-feld">
+          <div class="label" id="hud-l2">Siege</div>
+          <div class="wert" id="hud-2">0</div>
+        </div>
+      </div>
+      <div class="buehne">
+        <p class="vr-status" id="status" role="status" aria-live="polite"></p>
+        <div class="lu-geraet">
+          <ol class="lu-spieler" id="spieler" aria-label="Spieler"></ol>
+          <div class="lu-rahmen">
+            <div class="lu-brett" id="brett" role="group" aria-label="Spielbrett"></div>
+          </div>
+          <div class="lu-becher">
+            <button
+              type="button"
+              class="lu-wuerfel"
+              id="wuerfel"
+              aria-label="Würfeln"
+              data-augen="6"
+            >
+              <span class="auge"></span><span class="auge"></span><span class="auge"></span
+              ><span class="auge"></span><span class="auge"></span><span class="auge"></span
+              ><span class="auge"></span><span class="auge"></span><span class="auge"></span>
+            </button>
+            <p class="lu-hinweis" id="hinweis"></p>
+          </div>
+        </div>
+        <p class="vr-punkte" id="punkte"></p>
+        <div class="vr-ende" id="ende" hidden>
+          <button type="button" class="knopf primaer" id="nochmal">Nochmal</button>
+        </div>
+        <div class="vr-ende"><button type="button" class="knopf" id="neu">Neues Spiel</button></div>
+      </div>
+      <p class="steuerung">
+        Tippe auf den Würfel, dann auf eine leuchtende Figur. Tastatur:
+        <kbd>Leertaste</kbd> würfelt, <kbd>1</kbd>–<kbd>4</kbd> oder <kbd>Tab</kbd> +
+        <kbd>Enter</kbd> wählt die Figur.
+      </p>
+      <section style="max-width: 420px; margin-top: 36px">
+        <h2 style="font-family: var(--pixel); font-weight: 400; font-size: 0.85rem">
+          Topliste · Punkte gegen den Computer
+        </h2>
+        <div id="topliste"></div>
+        <button class="knopf" id="reset" style="margin-top: 10px">Spielstand zurücksetzen</button>
+      </section>
+      <section class="lernbox">
+        <details open>
+          <summary>Anleitung &amp; Regeln</summary>
+          <p>
+            <strong>Ziel:</strong> Bring alle vier Figuren einmal rund ums Brett in dein farbiges
+            Ziel.
+          </p>
+          <ul>
+            <li>
+              Mit einer <strong>6</strong> kommt eine Figur aus dem Haus auf dein Startfeld. Das ist
+              Pflicht, solange noch eine im Haus wartet.
+            </li>
+            <li>Stehen noch Figuren im Haus, musst du dein Startfeld zuerst freiziehen.</li>
+            <li>
+              Nach einer 6 würfelst du nochmal. Hast du keine Figur auf der Bahn, hast du 3 Versuche
+              für die 6.
+            </li>
+            <li>
+              Landest du auf einer fremden Figur, muss sie zurück ins Haus. Auf eigene Figuren
+              darfst du nicht ziehen.
+            </li>
+            <li>
+              Ins Ziel geht es nur mit genau passender Zahl, eigene Figuren im Ziel werden nicht
+              übersprungen.
+            </li>
+            <li>
+              <strong>Gegen Computer:</strong> 1 bis 3 Computer. Jeder Sieg bringt so viele Punkte,
+              wie Computer mitspielen (auf „Clever“ doppelt).
+            </li>
+            <li><strong>Am Gerät:</strong> 2 bis 4 Personen reichen das Handy weiter.</li>
+            <li>
+              <strong>Online:</strong> Eröffne ein Spiel, schick den Code (oder Link) an bis zu drei
+              Leute und tippe auf „Starten“. Wer zu lange braucht (30 s), für den zieht der
+              Computer.
+            </li>
+          </ul>
+        </details>
+      </section>
+      <section class="lernbox">
+        <details>
+          <summary>Wie funktioniert der Code?</summary>
+          <p>
+            <strong>Jede Figur ist nur eine Zahl:</strong> −1 heißt Haus, 0 bis 39 ist die Bahn aus
+            Sicht der eigenen Farbe, 40 bis 43 das Ziel. Weil jede Farbe 10 Felder später startet,
+            ist das echte Bahnfeld einfach <code>(Zahl + 10 × Farbe) mod 40</code>. So gelten
+            dieselben Regeln für alle vier Farben.
+          </p>
+          <p>
+            <strong>Erlaubte Züge:</strong> Das Spiel probiert für jede Figur „Zahl + Wurf“ und
+            streicht, was nicht geht (eigene Figur im Weg, über das Ziel hinaus). Danach greifen die
+            Pflichten: mit 6 raus, Startfeld räumen.
+          </p>
+          <p>
+            <strong>Der clevere Computer</strong> gibt jedem möglichen Zug Punkte: Schlagen bringt
+            viel, rauskommen und ins Ziel auch. Zieht eine Figur aus der Reichweite eines Gegners (1
+            bis 6 Felder dahinter), gibt es Plus, landet sie davor, Minus. Der Zug mit den meisten
+            Punkten gewinnt.
+          </p>
+          <p>
+            <strong>Online</strong> würfelt nur der Browser des Gastgebers – mit
+            <code>crypto.getRandomValues</code>, also echtem Zufall. Die anderen schicken nur
+            „würfeln“ oder „Figur 2“. So kann keiner schummeln.
+          </p>
+        </details>
+      </section>
+    </main>
+    <footer class="fuss">
+      <div class="container fuss-in">
+        <span>Browser-Arcade · Open Source</span>
+        <nav aria-label="Rechtliches">
+          <a href="./impressum.html">Impressum</a><a href="./datenschutz.html">Datenschutz</a>
+        </nav>
+      </div>
+    </footer>
+    <script type="module" src="./game.js?v=20261024"></script>
+  </body>
+</html>
